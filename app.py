@@ -12,6 +12,8 @@ from utils.ai_client import client, MODEL
 # Create Flask app FIRST
 app = Flask(__name__)
 app.secret_key = SECRET_KEY
+app.config['SESSION_PERMANENT'] = False
+
 
 
 # --- Initialize GenAI ---

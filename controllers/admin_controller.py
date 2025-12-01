@@ -19,7 +19,6 @@ def admin_login():
 
         if username == ADMIN_USER and password == ADMIN_PASS:
             session["is_admin"] = True
-            session.permanent = True
             flash("Logged in successfully!", "success")
             return redirect(url_for("admin.admin_dashboard"))
         else:

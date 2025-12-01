@@ -22,7 +22,7 @@ def user_login():
             session["user_roll"] = student.roll
 
             flash(f"Login successful! Welcome back {student.name}", "success")
-            return redirect(url_for("main.home"))   # ✔ Correct
+            return redirect(url_for("main.home"))   
         else:
             flash("Invalid credentials.", "error")
 
