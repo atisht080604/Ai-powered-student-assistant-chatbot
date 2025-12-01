@@ -1,0 +1,329 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.admin-body {
+    font-family: "Poppins", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    color: #f5f6ff;
+    background: #050818;
+    min-height: 100vh;
+    position: relative;
+}
+
+.bg-gradient {
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(circle at 0% 0%, #1a73ff 0, transparent 55%),
+                radial-gradient(circle at 100% 0%, #ff2ea6 0, transparent 55%),
+                radial-gradient(circle at 50% 100%, #00ffc3 0, transparent 55%),
+                #050818;
+    z-index: -2;
+    animation: moveGradient 18s ease-in-out infinite alternate;
+}
+
+@keyframes moveGradient {
+    0% {
+        background-position: 0% 0%, 100% 0%, 50% 100%;
+    }
+    100% {
+        background-position: 20% 10%, 80% 0%, 50% 90%;
+    }
+}
+
+/* NAVBAR */
+.admin-nav {
+    position: sticky;
+    top: 0;
+    padding: 12px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    backdrop-filter: blur(14px);
+    background: rgba(5, 10, 35, 0.92);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    z-index: 10;
+}
+
+.nav-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.nav-logo-text {
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    font-size: 13px;
+    text-transform: uppercase;
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.nav-links a {
+    color: #e7ebff;
+    text-decoration: none;
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    opacity: 0.8;
+    position: relative;
+    transition: 0.2s ease;
+}
+
+.nav-links a.active,
+.nav-links a:hover {
+    opacity: 1;
+}
+
+.nav-links a::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -5px;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #00ffc3, #4fa3ff);
+    border-radius: 999px;
+    transition: width 0.2s ease;
+}
+
+.nav-links a.active::after,
+.nav-links a:hover::after {
+    width: 100%;
+}
+
+/* MAIN AREA */
+.admin-main {
+    padding: 24px 32px 40px;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.admin-main h1 {
+    font-size: 24px;
+    margin-bottom: 6px;
+}
+
+.subtitle {
+    font-size: 13px;
+    color: #c4cffd;
+    margin-bottom: 18px;
+}
+
+/* STATS GRID */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 14px;
+    margin-bottom: 24px;
+}
+
+.stat-card {
+    padding: 14px 16px;
+    border-radius: 16px;
+    background: rgba(6, 12, 48, 0.96);
+    border: 1px solid rgba(132, 179, 255, 0.55);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.55);
+}
+
+.stat-card .label {
+    font-size: 12px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #9fb5ff;
+    margin-bottom: 6px;
+}
+
+.stat-card .value {
+    font-size: 22px;
+    font-weight: 600;
+    color: #00ffc3;
+}
+
+/* PANELS */
+.panel {
+    margin-top: 22px;
+    padding: 16px 16px 18px;
+    border-radius: 18px;
+    background: rgba(7, 13, 50, 0.96);
+    border: 1px solid rgba(132, 179, 255, 0.55);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.55);
+}
+
+.panel h2 {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+/* FORMS */
+.simple-form {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 8px;
+    margin-top: 6px;
+}
+
+.simple-form input,
+.login-form input {
+    padding: 9px 11px;
+    border-radius: 999px;
+    border: 1px solid rgba(143, 184, 255, 0.7);
+    background: rgba(3, 7, 32, 0.95);
+    color: #f5f6ff;
+    font-size: 13px;
+    outline: none;
+}
+
+.simple-form button,
+.login-form button,
+.table-wrap button {
+    padding: 9px 16px;
+    border-radius: 999px;
+    border: none;
+    font-size: 13px;
+    font-weight: 500;
+    background: linear-gradient(120deg, #00ffc3, #4fa3ff);
+    color: #050b19;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.simple-form button:hover,
+.login-form button:hover,
+.table-wrap button:hover {
+    transform: translateY(-1px);
+}
+
+/* TABLE */
+.table-wrap {
+    margin-top: 10px;
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+th,
+td {
+    padding: 8px 10px;
+    border-bottom: 1px solid rgba(123, 160, 238, 0.35);
+    text-align: left;
+}
+
+th {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: #a8b6ff;
+}
+
+tr:last-child td {
+    border-bottom: none;
+}
+
+.danger {
+    background: linear-gradient(120deg, #ff4b7a, #ff8e6d) !important;
+    color: #180308 !important;
+}
+
+/* FLASH MESSAGES */
+.flash-area {
+    margin-bottom: 12px;
+}
+
+.flash {
+    padding: 8px 12px;
+    border-radius: 999px;
+    margin-bottom: 6px;
+    font-size: 12px;
+}
+
+.flash.success {
+    background: rgba(0, 255, 181, 0.15);
+    border: 1px solid rgba(0, 255, 181, 0.5);
+}
+
+.flash.error {
+    background: rgba(255, 102, 102, 0.14);
+    border: 1px solid rgba(255, 102, 102, 0.6);
+}
+
+.flash.info {
+    background: rgba(118, 164, 255, 0.14);
+    border: 1px solid rgba(118, 164, 255, 0.6);
+}
+
+/* LOGIN PAGE */
+.admin-login-shell {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+}
+
+.admin-login-card {
+    width: 100%;
+    max-width: 380px;
+    padding: 22px 20px 20px;
+    border-radius: 20px;
+    background: rgba(8, 14, 48, 0.96);
+    border: 1px solid rgba(130, 178, 255, 0.7);
+    box-shadow: 0 0 28px rgba(0, 0, 0, 0.7);
+}
+
+.admin-login-card h1 {
+    font-size: 22px;
+    margin-bottom: 4px;
+}
+
+.admin-login-card .subtitle {
+    margin-bottom: 14px;
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.login-form label {
+    font-size: 12px;
+    margin-top: 4px;
+}
+
+.back-link {
+    display: inline-block;
+    margin-top: 12px;
+    font-size: 12px;
+    color: #afc2ff;
+    text-decoration: none;
+}
+
+/* RESPONSIVE */
+@media (max-width: 720px) {
+    .admin-main {
+        padding-inline: 16px;
+    }
+
+    .admin-nav {
+        padding-inline: 16px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .nav-links {
+        flex-wrap: wrap;
+    }
+}

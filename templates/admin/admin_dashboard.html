@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Admin Dashboard - Student Assistant</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+</head>
+
+<body class="admin-body">
+    <div class="bg-gradient"></div>
+
+    <header class="admin-nav">
+        <div class="nav-left">
+            <span class="nav-logo-text">Admin Dashboard</span>
+        </div>
+        <nav class="nav-links">
+            <a href="{{ url_for('admin.admin_dashboard') }}">Overview</a>
+            <a href="{{ url_for('admin.admin_students') }}">Students</a>
+            <a href="{{ url_for('admin.admin_timetable') }}">Timetable</a>
+            <a href="{{ url_for('admin.admin_fees') }}">Fees</a>
+            <a href="{{ url_for('admin.admin_logout') }}">Logout</a>
+        </nav>
+    </header>
+
+    <main class="admin-main">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="flash-area">
+            {% for category, msg in messages %}
+            <div class="flash {{ category }}">{{ msg }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+
+        <h1>Welcome, Admin 👋</h1>
+        <p class="subtitle">Here is a quick overview of your college data.</p>
+
+        <section class="stats-grid">
+            <div class="stat-card">
+                <p class="label">Students</p>
+                <p class="value">{{ stats.students }}</p>
+            </div>
+            <div class="stat-card">
+                <p class="label">Fee Records</p>
+                <p class="value">{{ stats.fees }}</p>
+            </div>
+            <div class="stat-card">
+                <p class="label">Timetable Slots</p>
+                <p class="value">{{ stats.timetable }}</p>
+            </div>
+        </section>
+    </main>
+
+</body>
+
+</html>

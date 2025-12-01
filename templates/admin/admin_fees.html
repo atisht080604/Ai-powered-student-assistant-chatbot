@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Admin - Fees</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+</head>
+
+<body class="admin-body">
+    <div class="bg-gradient"></div>
+
+    <header class="admin-nav">
+        <div class="nav-left">
+            <span class="nav-logo-text">Admin Panel</span>
+        </div>
+        <nav class="nav-links">
+            <a href="{{ url_for('admin.admin_dashboard') }}">Overview</a>
+            <a href="{{ url_for('admin.admin_students') }}">Students</a>
+            <a href="{{ url_for('admin.admin_timetable') }}">Timetable</a>
+            <a href="{{ url_for('admin.admin_fees') }}" class="active">Fees</a>
+            <a href="{{ url_for('admin.admin_logout') }}">Logout</a>
+        </nav>
+    </header>
+
+    <main class="admin-main">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="flash-area">
+            {% for category, msg in messages %}
+            <div class="flash {{ category }}">{{ msg }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+
+        <h1>Fee Records</h1>
+
+        <section class="panel">
+            <h2>Add Fee Record</h2>
+            <form method="post" action="{{ url_for('admin.admin_fees_add') }}" class="simple-form">
+                <input type="text" name="roll" placeholder="Roll (R001)" min="1" required>
+                <input type="number" name="semester" placeholder="Semester" min="1" max="6" required>
+                <input type="number" step="0.01" name="amount_due" placeholder="Amount Due" min="0" required>
+                <input type="number" step="0.01" name="amount_paid" placeholder="Amount Paid" min="0" required>
+                <input type="date" name="due_date" placeholder="Due Date" required>
+                <button type="submit">Add</button>
+            </form>
+        </section>
+
+        <section class="panel">
+            <h2>Fee List</h2>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Roll</th>
+                            <th>Sem</th>
+                            <th>Due</th>
+                            <th>Paid</th>
+                            <th>Due Date</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for f in fees %}
+                        <tr>
+                            <td>{{ f.id }}</td>
+                            <td>{{ f.roll }}</td>
+                            <td>{{ f.semester }}</td>
+                            <td>{{ f.amount_due }}</td>
+                            <td>{{ f.amount_paid }}</td>
+                            <td>{{ f.due_date }}</td>
+                            <td>
+                                <form method="post" action="{{ url_for('admin.admin_fees_delete', fid=f.id) }}"
+                                    onsubmit="return confirm('Delete this fee record?');">
+                                    <button type="submit" class="danger">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="7">No fee records.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+</body>
+
+</html>

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Admin - Students</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+</head>
+
+<body class="admin-body">
+    <div class="bg-gradient"></div>
+
+    <header class="admin-nav">
+        <div class="nav-left">
+            <span class="nav-logo-text">Admin Panel</span>
+        </div>
+        <nav class="nav-links">
+            <a href="{{ url_for('admin.admin_dashboard') }}">Overview</a>
+            <a href="{{ url_for('admin.admin_students') }}" class="active">Students</a>
+            <a href="{{ url_for('admin.admin_timetable') }}">Timetable</a>
+            <a href="{{ url_for('admin.admin_fees') }}">Fees</a>
+            <a href="{{ url_for('admin.admin_logout') }}">Logout</a>
+        </nav>
+    </header>
+
+    <main class="admin-main">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="flash-area">
+            {% for category, msg in messages %}
+            <div class="flash {{ category }}">{{ msg }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+
+        <h1>Students</h1>
+
+        <section class="panel">
+            <h2>Add Student</h2>
+            <form method="post" action="{{ url_for('admin.admin_students_add') }}" class="simple-form">
+                <input type="text" name="roll" placeholder="Roll (e.g., R001)" required>
+                <input type="text" name="name" placeholder="Name" required>
+                <input type="text" name="department" placeholder="Department (e.g., CSE)" required>
+                <input type="number" name="year" placeholder="Year (e.g., 1,2,3)" min="1" max="5"
+                    oninput="this.value = Math.abs(this.value)" required>
+
+                <input type="number" step="0.01" name="attendance" placeholder="Attendance %" required>
+                <input type="email" name="email" placeholder="Email" pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$"
+                    title="Enter a valid email (must contain @ and .)" required>
+
+                <button type="submit">Add</button>
+            </form>
+        </section>
+
+        <section class="panel">
+            <h2>Student List</h2>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Roll</th>
+                            <th>Name</th>
+                            <th>Dept</th>
+                            <th>Year</th>
+                            <th>Attendance</th>
+                            <th>Email</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for s in students %}
+                        <tr>
+                            <td>{{ s.id }}</td>
+                            <td>{{ s.roll }}</td>
+                            <td>{{ s.name }}</td>
+                            <td>{{ s.department }}</td>
+                            <td>{{ s.year }}</td>
+                            <td>{{ s.attendance }}</td>
+                            <td>{{ s.email }}</td>
+                            <td>
+                                <form method="post" action="{{ url_for('admin.admin_students_delete', sid=s.id) }}"
+                                    onsubmit="return confirm('Delete this student?');">
+                                    <button type="submit" class="danger">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="8">No students in database.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+</body>
+
+</html>
