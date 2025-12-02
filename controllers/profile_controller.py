@@ -31,7 +31,7 @@ def update_profile():
 
     student = StudentModel.get_by_roll(roll)
 
-    # Check if email changed → Need OTP
+    # If email changed → send OTP
     if new_email != student.email:
         otp = random.randint(100000, 999999)
         session["email_change_otp"] = str(otp)
@@ -42,8 +42,16 @@ def update_profile():
         flash("OTP sent to new email!", "info")
         return redirect(url_for("profile.verify_email_otp"))
 
-    # Normal update (no email change)
-    StudentModel.update_profile(roll, name, year)
+    # Normal update
+    StudentModel.update_profile(
+        roll=roll,
+        name=name,
+        year=year,
+    )
+
+    # Update session
+    session["user_name"] = name
+
     flash("Profile updated successfully!", "success")
     return redirect(url_for("profile.edit_profile"))
 
@@ -63,7 +71,10 @@ def verify_email_otp():
 
             StudentModel.update_email(roll, new_email)
 
-            # Clear temp session
+            # Update session email also
+            session["user_email"] = new_email
+
+            # Clear temp data
             session.pop("email_change_otp", None)
             session.pop("new_email_temp", None)
 

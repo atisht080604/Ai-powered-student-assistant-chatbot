@@ -13,10 +13,11 @@
     rel="stylesheet">
     
     <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+    
 </head>
 
 <body>
-    {% include 'components/profile_button.html' %}
+    
     {% with messages = get_flashed_messages(with_categories=True) %}
     {% if messages %}
     <div class="flash-container">
@@ -117,6 +118,16 @@
     </main>
 
 
+<script>
+    // Auto hide flash messages after 3 seconds
+    setTimeout(() => {
+        document.querySelectorAll(".flash-message").forEach(msg => {
+            msg.style.opacity = "0";
+            msg.style.transform = "translateY(-10px)";
+            setTimeout(() => msg.remove(), 300);
+        });
+    }, 3000);
+</script>
 
 </body>
 

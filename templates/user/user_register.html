@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" type="image/png" sizes="98x98" href="{{ url_for('static', filename='images/student_login.png') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+   
 </head>
 
 <body class="admin-body">
@@ -49,6 +50,20 @@
             <a href="{{ url_for('user.user_login') }}" class="back-link">← Go to login</a>
         </div>
     </div>
+
+    <script>
+        // Auto hide flash messages after 3 seconds
+        setTimeout(() => {
+            document.querySelectorAll(".flash-message").forEach(msg => {
+                msg.style.opacity = "0";
+                msg.style.transform = "translateY(-10px)";
+                setTimeout(() => msg.remove(), 300);
+            });
+        }, 3000);
+    </script>
+
+
+
 </body>
 
 </html>

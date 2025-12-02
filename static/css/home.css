@@ -764,3 +764,37 @@ body::before {
         transform: translate(-50%, 0);
     }
 }
+/* ---------------- Floating Profile Button ---------------- */
+
+.floating-profile-btn {
+    position: fixed;
+    bottom: 24px;
+    left: 24px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: rgba(0, 255, 204, 0.15);
+    border: 2px solid rgba(0, 255, 204, 0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 0 20px rgba(0, 255, 204, 0.45);
+    transition: 0.25s ease-in-out;
+    z-index: 999999;
+    cursor: pointer;
+}
+
+/* Hover glow */
+.floating-profile-btn:hover {
+    background: rgba(0, 255, 204, 0.30);
+    box-shadow: 0 0 26px rgba(0, 255, 204, 0.85);
+    transform: scale(1.08);
+}
+
+/* Icon inside */
+.floating-profile-btn img {
+    width: 28px;
+    height: 28px;
+    filter: drop-shadow(0 0 10px rgba(0, 255, 204, 0.9));
+}
