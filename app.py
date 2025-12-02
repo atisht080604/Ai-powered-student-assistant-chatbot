@@ -9,6 +9,7 @@ from google import genai
 from utils.ai_client import client, MODEL
 
 
+
 # Create Flask app FIRST
 app = Flask(__name__)
 app.secret_key = SECRET_KEY
@@ -32,12 +33,14 @@ from controllers.user_controller import user
 from controllers.admin_controller import admin
 from controllers.chat_controller import chat
 from controllers.otp_controller import otp    # (will add later)
+from controllers.profile_controller import profile
 
 app.register_blueprint(main)
 app.register_blueprint(user)
 app.register_blueprint(admin)
 app.register_blueprint(chat)
 app.register_blueprint(otp)
+app.register_blueprint(profile)
 
 # app.register_blueprint(otp)  # after making it
 

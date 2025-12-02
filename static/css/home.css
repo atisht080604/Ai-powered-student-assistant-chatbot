@@ -688,6 +688,36 @@ body::before {
     transform: translateY(-2px);
 }
 
+.floating-profile-btn {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    background: rgba(0, 255, 204, 0.15);
+    border: 2px solid rgba(0, 255, 204, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(6px);
+    box-shadow: 0 0 15px rgba(0, 255, 204, 0.6);
+    transition: .25s ease-in-out;
+    z-index: 9999;
+}
+
+.floating-profile-btn:hover {
+    background: rgba(0, 255, 204, 0.35);
+    box-shadow: 0 0 20px rgba(0, 255, 204, 0.9);
+    transform: scale(1.1);
+}
+
+.floating-profile-btn img {
+    width: 26px;
+    height: 26px;
+    filter: drop-shadow(0 0 6px rgba(0,255,204,0.8));
+}
+
 .flash-container {
     position: fixed;
     top: 90px;

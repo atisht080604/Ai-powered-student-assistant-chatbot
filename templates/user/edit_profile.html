@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Profile</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/edit_profile.css') }}">
+    
+</head>
+
+<body class="auth-body">
+
+    <div class="auth-card">
+        <h2>Edit Profile</h2>
+
+        <form method="POST">
+
+            <label>Name</label>
+            <input type="text" name="name" value="{{ student.name }}" required>
+
+            <label>Roll Number</label>
+            <input type="text" name="roll" value="{{ student.roll }}" required>
+
+            <label>Year</label>
+            <input type="number" name="year" value="{{ student.year }}" min="1" max="5" required>
+
+            <label>Email</label>
+            <input type="email" name="email" value="{{ student.email }}" required>
+
+            <button type="submit" class="auth-btn">Save Changes</button>
+        </form>
+
+        <a href="/" class="auth-link back">← Back to Home</a>
+    </div>
+
+</body>
+
+</html>

@@ -63,3 +63,21 @@ class StudentModel:
             q = text("UPDATE students SET password = :p WHERE email = :email")
             conn.execute(q, {"p": new_password, "email": email})
             conn.commit()
+    @staticmethod
+    def update_profile(roll, name, year, email=None):
+        query = text("""
+            UPDATE students 
+            SET name = :name,
+                year = :year
+            WHERE roll = :roll
+        """)
+        with engine.connect() as conn:
+            conn.execute(query, {"roll": roll, "name": name, "year": year})
+            conn.commit()
+
+    @staticmethod
+    def update_email(roll, new_email):
+        query = text("UPDATE students SET email = :email WHERE roll = :roll")
+        with engine.connect() as conn:
+            conn.execute(query, {"email": new_email, "roll": roll})
+            conn.commit()

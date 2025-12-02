@@ -1,0 +1,92 @@
+/* ---------- Global Auth Background ---------- */
+.auth-body {
+    background: #0d1021;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: "Poppins", sans-serif;
+    color: #dfe6ff;
+}
+
+/* ---------- Card ---------- */
+.auth-card {
+    width: 420px;
+    padding: 36px;
+    background: #0f1535;
+    border-radius: 22px;
+    border: 1px solid rgba(0, 255, 255, 0.15);
+    box-shadow: 0 0 25px rgba(0, 0, 0, 0.35);
+}
+
+/* Title */
+.auth-card h2 {
+    font-size: 24px;
+    margin-bottom: 18px;
+    color: #ffffff;
+}
+
+/* ---------- Form Labels ---------- */
+label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 14px;
+    color: #9fb3ff;
+}
+
+/* ---------- Input Fields ---------- */
+input {
+    width: 100%;
+    padding: 12px 14px;
+    margin-bottom: 16px;
+    background: #0b112d;
+    border: 1px solid rgba(0, 255, 255, 0.20);
+    border-radius: 25px;
+    color: #e0e6ff;
+    font-size: 15px;
+    outline: none;
+}
+
+input:focus {
+    border-color: #00ffc3;
+    box-shadow: 0 0 10px rgba(0, 255, 195, 0.4);
+}
+
+/* ---------- Button ---------- */
+.auth-btn {
+    width: 100%;
+    margin-top: 6px;
+    padding: 12px 0;
+    font-size: 15px;
+    font-weight: 600;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    background: linear-gradient(90deg, #00ffc8, #4db8ff);
+    color: #000;
+    transition: 0.2s ease-in-out;
+}
+
+.auth-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 16px rgba(0, 255, 204, 0.6);
+}
+
+/* ---------- Links ---------- */
+.auth-link {
+    display: block;
+    margin-top: 14px;
+    font-size: 14px;
+    text-decoration: none;
+    color: #90a7ff;
+    transition: 0.2s;
+}
+
+.auth-link:hover {
+    color: #00ffe4;
+}
+
+/* Back link styling */
+.auth-link.back {
+    margin-top: 18px;
+}
