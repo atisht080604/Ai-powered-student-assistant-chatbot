@@ -1,9 +1,9 @@
 from dotenv import load_dotenv
-load_dotenv()
+import os
+load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), ".env"))
 
 # app.py
 from flask import Flask
-import os
 from config import SECRET_KEY, GOOGLE_API_KEY, MODEL_NAME
 from google import genai
 from utils.ai_client import client, MODEL
@@ -32,7 +32,7 @@ from controllers.main_controller import main
 from controllers.user_controller import user
 from controllers.admin_controller import admin
 from controllers.chat_controller import chat
-from controllers.otp_controller import otp    # (will add later)
+from controllers.otp_controller import otp    
 from controllers.profile_controller import profile
 
 app.register_blueprint(main)

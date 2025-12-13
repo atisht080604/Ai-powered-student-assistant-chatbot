@@ -1,29 +1,41 @@
 # utils/email_service.py
 import smtplib
 from email.mime.text import MIMEText
-from config import EMAIL_USER, EMAIL_APP_PASSWORD
+from config import EMAIL_USER
 
-def send_otp_email(to_email: str, otp: int):
-    """
-    Sends a simple OTP email using Gmail SMTP.
-    Make sure:
-    - EMAIL_USER is your Gmail
-    - EMAIL_APP_PASSWORD is your Google App Password
-    """
-    sender_email = EMAIL_USER
-    password = EMAIL_APP_PASSWORD
+import smtplib
+import os
+from email.message import EmailMessage
 
-    msg = MIMEText(f"Your OTP for password reset is: {otp}")
-    msg["Subject"] = "Student Assistant - Password Reset OTP"
-    msg["From"] = sender_email
-    msg["To"] = to_email
+EMAIL_USER = os.getenv("EMAIL_USER")
+EMAIL_PASS = os.getenv("EMAIL_PASS")
 
+def send_otp_email(to_email, otp):
     try:
-        server = smtplib.SMTP("smtp.gmail.com", 587)
-        server.starttls()
-        server.login(sender_email, password)
-        server.sendmail(sender_email, to_email, msg.as_string())
-        server.quit()
-        print("OTP email sent to:", to_email)
+        msg = EmailMessage()
+        msg["Subject"] = "Student Assistant - OTP Verification"
+        msg["From"] = EMAIL_USER
+        msg["To"] = to_email
+        msg.set_content(
+            f"""
+Hello 👋
+
+Your OTP is: {otp}
+
+This OTP is valid for 5 minutes.
+Do not share it with anyone.
+
+– Student Assistant
+"""
+        )
+
+        with smtplib.SMTP("smtp.gmail.com", 587) as server:
+            server.starttls()
+            server.login(EMAIL_USER, EMAIL_PASS)
+            server.send_message(msg)
+
+        print("✅ OTP sent successfully")
+
     except Exception as e:
-        print("Error sending email:", e)
+        print("❌ OTP ERROR:", e)
+        raise

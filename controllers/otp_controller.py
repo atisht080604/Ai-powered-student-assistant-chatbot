@@ -10,6 +10,7 @@ otp = Blueprint("otp", __name__)
 # ------------------------------
 # 1. Forgot Password → Enter Email
 # ------------------------------
+
 @otp.route("/forgot", methods=["GET", "POST"])
 def forgot_password():
     if request.method == "POST":
