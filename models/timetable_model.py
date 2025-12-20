@@ -8,22 +8,24 @@ class TimetableModel:
     def get_all():
         with engine.connect() as conn:
             q = text("""
-                SELECT * FROM timetable
-                ORDER BY FIELD(day, 'Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'),
-                         start_time
+                    SELECT * FROM timetable
+                    ORDER BY class_date, start_time
             """)
+
             return conn.execute(q).fetchall()
 
 
     @staticmethod
-    def create(day, start_time, end_time, subject, instructor, location):
+    def create(day, class_date, start_time, end_time, subject, instructor, location):
         with engine.connect() as conn:
             q = text("""
-                INSERT INTO timetable (day, start_time, end_time, subject, instructor, location)
-                VALUES (:day, :start_time, :end_time, :subject, :instructor, :location)
+                INSERT INTO timetable 
+                (day, class_date, start_time, end_time, subject, instructor, location)
+                VALUES (:day, :class_date, :start_time, :end_time, :subject, :instructor, :location)
             """)
             conn.execute(q, {
                 "day": day,
+                "class_date": class_date,
                 "start_time": start_time,
                 "end_time": end_time,
                 "subject": subject,
@@ -32,6 +34,13 @@ class TimetableModel:
             })
             conn.commit()
 
+    @staticmethod
+    def delete(tid):
+        with engine.connect() as conn:
+            q = text("DELETE FROM timetable WHERE id = :id")
+            conn.execute(q, {"id": tid})
+            conn.commit()
+        
 
     @staticmethod
     def count():

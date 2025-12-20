@@ -43,6 +43,7 @@
             <h2>Add Timetable Entry</h2>
             <form method="post" action="{{ url_for('admin.admin_timetable_add') }}" class="simple-form">
                 <input type="text" name="day" placeholder="Day (e.g., Monday)" required>
+                <input type="date" name="class_date" required>
                 <input type="text" name="start_time" placeholder="Start (HH:MM)" required>
                 <input type="text" name="end_time" placeholder="End (HH:MM)" required>
                 <input type="text" name="subject" placeholder="Subject" required>
@@ -72,11 +73,14 @@
                         <tr>
                             <th>ID</th>
                             <th>Day</th>
+                            <th>Date</th>
                             <th>Start</th>
                             <th>End</th>
                             <th>Subject</th>
                             <th>Instructor</th>
                             <th>Location</th>
+                            <th>Action</th>
+
                         </tr>
                     </thead>
                     <tbody>
@@ -84,11 +88,18 @@
                         <tr>
                             <td>{{ t.id }}</td>
                             <td>{{ t.day }}</td>
+                            <td>{{ t.class_date }}</td>
                             <td>{{ t.start_time }}</td>
                             <td>{{ t.end_time }}</td>
                             <td>{{ t.subject }}</td>
                             <td>{{ t.instructor }}</td>
                             <td>{{ t.location }}</td>
+                            <td>
+                                <form method="POST" action="{{ url_for('admin.admin_timetable_delete', tid=t.id) }}"
+                                    onsubmit="return confirm('Delete this timetable entry?');">
+                                    <button type="submit" class="danger">Delete</button>
+                                </form>
+                            </td>
                         </tr>
                         {% else %}
                         <tr>

@@ -1,6 +1,8 @@
 # models/student_model.py
 from utils.db import engine
 from sqlalchemy import text
+from sqlalchemy.exc import IntegrityError
+
 
 class StudentModel:
 
@@ -19,22 +21,27 @@ class StudentModel:
 
 
     @staticmethod
-    def create(roll, name, department, year, email, password, attendance=0):
-        with engine.connect() as conn:
-            q = text("""
-                INSERT INTO students (roll, name, department, year, attendance, email, password)
-                VALUES (:roll, :name, :department, :year, :attendance, :email, :password)
-            """)
-            conn.execute(q, {
-                "roll": roll,
-                "name": name,
-                "department": department,
-                "year": int(year or 1),
-                "attendance": float(attendance or 0),
-                "email": email,
-                "password": password
-            })
-            conn.commit()
+    def create(roll, name, department, year, email, password, attendance=0):        
+        try:
+            with engine.connect() as conn:
+                q = text("""
+                    INSERT INTO students (roll, name, department, year, attendance, email, password)
+                    VALUES (:roll, :name, :department, :year, :attendance, :email, :password)
+                """)
+                conn.execute(q, {
+                    "roll": roll,
+                    "name": name,
+                    "department": department,
+                    "year": int(year or 1),
+                    "attendance": float(attendance or 0),
+                    "email": email,
+                    "password": password
+                })
+                conn.commit()
+            return True
+
+        except IntegrityError:
+            return False
 
 
     @staticmethod

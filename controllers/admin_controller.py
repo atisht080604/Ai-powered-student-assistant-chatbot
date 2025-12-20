@@ -55,17 +55,24 @@ def admin_students():
 @admin_required
 def admin_students_add():
 
-    StudentModel.create(
+    success = StudentModel.create(
         roll=request.form.get("roll"),
         name=request.form.get("name"),
         department=request.form.get("department"),
         year=request.form.get("year"),
         email=request.form.get("email"),
-        password="1234",  # Default password
+        password="1234",
         attendance=request.form.get("attendance")
     )
 
-    flash("Student added successfully!", "success")
+    if not success:
+        flash(
+            "⚠️ Student with this roll number already exists. Please use a unique roll number.",
+            "error"
+        )
+        return redirect(url_for("admin.admin_students"))
+
+    flash("✅ Student added successfully!", "success")
     return redirect(url_for("admin.admin_students"))
 
 
@@ -124,6 +131,7 @@ def admin_timetable():
 def admin_timetable_add():
     TimetableModel.create(
         day=request.form.get("day"),
+        class_date=request.form.get("class_date"),
         start_time=request.form.get("start_time"),
         end_time=request.form.get("end_time"),
         subject=request.form.get("subject"),
@@ -131,7 +139,7 @@ def admin_timetable_add():
         location=request.form.get("location"),
     )
 
-    flash("Timetable entry added!", "success")
+    flash("Timetable entry added successfully!", "success")
     return redirect(url_for("admin.admin_timetable"))
 
 
@@ -166,6 +174,13 @@ def admin_timetable_upload():
         print("UPLOAD ERROR:", e)
         flash("Error while processing file.", "error")
 
+    return redirect(url_for("admin.admin_timetable"))
+
+@admin.route("/admin/timetable/delete/<int:tid>", methods=["POST"])
+@admin_required
+def admin_timetable_delete(tid):
+    TimetableModel.delete(tid)
+    flash("Timetable entry removed successfully!", "info")
     return redirect(url_for("admin.admin_timetable"))
 
 
