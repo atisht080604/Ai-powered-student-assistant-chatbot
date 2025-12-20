@@ -21,11 +21,12 @@ class StudentModel:
 
 
     @staticmethod
-    def create(roll, name, department, year, email, password, attendance=0):        
+    def create(roll, name, department, year, email, password, attendance=0):
         try:
             with engine.connect() as conn:
                 q = text("""
-                    INSERT INTO students (roll, name, department, year, attendance, email, password)
+                    INSERT INTO students
+                    (roll, name, department, year, attendance, email, password)
                     VALUES (:roll, :name, :department, :year, :attendance, :email, :password)
                 """)
                 conn.execute(q, {
@@ -51,6 +52,27 @@ class StudentModel:
             conn.execute(q, {"id": student_id})
             conn.commit()
 
+    @staticmethod
+    def update_admin(sid, name, department, year, attendance, email):
+        with engine.connect() as conn:
+            q = text("""
+                UPDATE students
+                SET name = :name,
+                    department = :dept,
+                    year = :year,
+                    attendance = :att,
+                    email = :email
+                WHERE id = :id
+            """)
+            conn.execute(q, {
+                "id": sid,
+                "name": name,
+                "dept": department,
+                "year": year,
+                "att": attendance,
+                "email": email
+            })
+            conn.commit()
 
     @staticmethod
     def count():

@@ -71,7 +71,7 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>ID</th>
+    
                             <th>Day</th>
                             <th>Date</th>
                             <th>Start</th>
@@ -86,7 +86,6 @@
                     <tbody>
                         {% for t in timetable %}
                         <tr>
-                            <td>{{ t.id }}</td>
                             <td>{{ t.day }}</td>
                             <td>{{ t.class_date }}</td>
                             <td>{{ t.start_time }}</td>
@@ -94,12 +93,28 @@
                             <td>{{ t.subject }}</td>
                             <td>{{ t.instructor }}</td>
                             <td>{{ t.location }}</td>
-                            <td>
-                                <form method="POST" action="{{ url_for('admin.admin_timetable_delete', tid=t.id) }}"
-                                    onsubmit="return confirm('Delete this timetable entry?');">
-                                    <button type="submit" class="danger">Delete</button>
-                                </form>
-                            </td>
+                    <td style="display:flex; gap:6px;">
+                        <!-- ✏️ Edit (opens modal, no new page) -->
+                        <button class="btn-small" onclick="openEditModal(
+                                '{{ t.day }}',
+                                '{{ t.class_date }}',
+                                '{{ t.start_time }}',
+                                '{{ t.end_time }}',
+                                '{{ t.subject }}',
+                                '{{ t.instructor }}',
+                                '{{ t.location }}'
+                            )">
+                            Edit
+                        </button>
+                    
+                        <!-- ❌ Delete -->
+                        <form method="POST" action="{{ url_for('admin.admin_timetable_delete', tid=t.id) }}"
+                            onsubmit="return confirm('Delete this timetable entry?');">
+                            <button class="danger">Delete</button>
+                        </form>
+                    </td>
+
+
                         </tr>
                         {% else %}
                         <tr>
@@ -111,6 +126,53 @@
             </div>
         </section>
     </main>
+    <!-- ================= EDIT TIMETABLE MODAL ================= -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <h2>Edit Timetable</h2>
+    
+            <form method="POST" id="editForm">
+                <input type="hidden" id="edit_id">
+    
+                <input type="text" name="day" id="edit_day" placeholder="Day" required>
+                <input type="date" name="class_date" id="edit_date" required>
+    
+                <input type="time" name="start_time" id="edit_start" required>
+                <input type="time" name="end_time" id="edit_end" required>
+    
+                <input type="text" name="subject" id="edit_subject" placeholder="Subject" required>
+                <input type="text" name="instructor" id="edit_instructor" placeholder="Instructor">
+                <input type="text" name="location" id="edit_location" placeholder="Location">
+    
+                <div class="modal-actions">
+                    <button type="submit">Update</button>
+                    <button type="button" onclick="closeModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function openEditModal(id, day, date, start, end, subject, instructor, location) {
+            document.getElementById("editModal").style.display = "flex";
+
+            document.getElementById("edit_day").value = day;
+            document.getElementById("edit_date").value = date;
+            document.getElementById("edit_start").value = start;
+            document.getElementById("edit_end").value = end;
+            document.getElementById("edit_subject").value = subject;
+            document.getElementById("edit_instructor").value = instructor;
+            document.getElementById("edit_location").value = location;
+
+            document.getElementById("editForm").action =
+                "/admin/timetable/update/" + id;
+        }
+
+        function closeModal() {
+            document.getElementById("editModal").style.display = "none";
+        }
+    </script>
+
 </body>
 
 </html>

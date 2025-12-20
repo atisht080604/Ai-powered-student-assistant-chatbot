@@ -41,8 +41,13 @@
 
         <section class="panel">
             <h2>Add Student</h2>
+            <p class="subtitle" style="color:#ffb3b3;">
+                ⚠️ Roll Number is a unique identifier. Please enter carefully — it cannot be changed later.
+            </p>
+
             <form method="post" action="{{ url_for('admin.admin_students_add') }}" class="simple-form">
-                <input type="text" name="roll" placeholder="Roll (e.g., R001)" required>
+                <input type="text" name="roll" placeholder="Roll (e.g., R001)" pattern="R[0-9]{3}"
+                    title="Roll must be in format R001, R002, etc." required>
                 <input type="text" name="name" placeholder="Name" required>
                 <input type="text" name="department" placeholder="Department (e.g., CSE)" required>
                 <input type="number" name="year" placeholder="Year (e.g., 1,2,3)" min="1" max="5"
@@ -68,6 +73,7 @@
                             <th>Year</th>
                             <th>Attendance</th>
                             <th>Email</th>
+                            <th>Action</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -80,12 +86,27 @@
                             <td>{{ s.year }}</td>
                             <td>{{ s.attendance }}</td>
                             <td>{{ s.email }}</td>
-                            <td>
+                            <td style="display:flex; gap:6px;">
+                                <!-- ✏️ Edit -->
+                                <button class="btn-small" onclick="openStudentEditModal(
+                                        '{{ s.id }}',
+                                        '{{ s.roll }}',
+                                        '{{ s.name }}',
+                                        '{{ s.department }}',
+                                        '{{ s.year }}',
+                                        '{{ s.attendance }}',
+                                        '{{ s.email }}'
+                                    )">
+                                    Edit
+                                </button>
+                            
+                                <!-- ❌ Delete -->
                                 <form method="post" action="{{ url_for('admin.admin_students_delete', sid=s.id) }}"
                                     onsubmit="return confirm('Delete this student?');">
                                     <button type="submit" class="danger">Delete</button>
                                 </form>
                             </td>
+
                         </tr>
                         {% else %}
                         <tr>
@@ -97,7 +118,49 @@
             </div>
         </section>
     </main>
+    <!-- ================= EDIT STUDENT MODAL ================= -->
+    <div id="studentEditModal" class="modal">
+        <div class="modal-content">
+            <h2>Edit Student</h2>
     
+            <form method="POST" id="studentEditForm">
+                <input type="hidden" id="student_id">
+    
+                <input type="text" id="student_roll" readonly>
+                <input type="text" name="name" id="student_name" required>
+                <input type="text" name="department" id="student_department" required>
+                <input type="number" name="year" id="student_year" min="1" max="5" required>
+                <input type="number" step="0.01" name="attendance" id="student_attendance" required>
+                <input type="email" name="email" id="student_email" required>
+    
+                <div class="modal-actions">
+                    <button type="submit">Update</button>
+                    <button type="button" onclick="closeStudentModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function openStudentEditModal(id, roll, name, dept, year, attendance, email) {
+            document.getElementById("studentEditModal").style.display = "flex";
+
+            document.getElementById("student_roll").value = roll;
+            document.getElementById("student_name").value = name;
+            document.getElementById("student_department").value = dept;
+            document.getElementById("student_year").value = year;
+            document.getElementById("student_attendance").value = attendance;
+            document.getElementById("student_email").value = email;
+
+            document.getElementById("studentEditForm").action =
+                "/admin/students/update/" + id;
+        }
+
+        function closeStudentModal() {
+            document.getElementById("studentEditModal").style.display = "none";
+        }
+    </script>
+
 </body>
 
 </html>

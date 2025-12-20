@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Edit Timetable</title>
+</head>
+
+<body class="admin-body">
+
+    <div class="admin-main panel">
+        <h2>Edit Timetable Entry</h2>
+
+        <form method="POST" action="{{ url_for('admin.admin_timetable_update', tid=t.id) }}" class="simple-form">
+
+            <input type="text" name="day" value="{{ t.day }}" required>
+            <input type="date" name="class_date" value="{{ t.class_date }}" required>
+
+            <input type="time" name="start_time" value="{{ t.start_time }}" required>
+            <input type="time" name="end_time" value="{{ t.end_time }}" required>
+
+            <input type="text" name="subject" value="{{ t.subject }}" required>
+            <input type="text" name="instructor" value="{{ t.instructor }}">
+            <input type="text" name="location" value="{{ t.location }}">
+
+            <button type="submit">Update</button>
+            <a href="{{ url_for('admin.admin_timetable') }}" class="back-link">Cancel</a>
+        </form>
+    </div>
+
+</body>
+
+</html>

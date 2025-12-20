@@ -7,7 +7,18 @@ class FeeModel:
     @staticmethod
     def get_all():
         with engine.connect() as conn:
-            q = text("SELECT * FROM fees")
+            q = text("""
+            SELECT 
+                f.id,
+                f.roll,
+                s.name AS student_name,
+                f.semester,
+                f.amount_due,
+                f.amount_paid,
+                f.due_date
+            FROM fees f
+            JOIN students s ON f.roll = s.roll
+        """)
             return conn.execute(q).fetchall()
 
     @staticmethod
@@ -37,6 +48,26 @@ class FeeModel:
         with engine.connect() as conn:
             q = text("DELETE FROM fees WHERE id = :id")
             conn.execute(q, {"id": fid})
+            conn.commit()
+
+    @staticmethod
+    def update(fid, semester, amount_due, amount_paid, due_date):
+        with engine.connect() as conn:
+            q = text("""
+                UPDATE fees
+                SET semester = :sem,
+                    amount_due = :due,
+                    amount_paid = :paid,
+                    due_date = :date
+                WHERE id = :id
+            """)
+            conn.execute(q, {
+                "id": fid,
+                "sem": semester,
+                "due": amount_due,
+                "paid": amount_paid,
+                "date": due_date
+            })
             conn.commit()
 
     @staticmethod

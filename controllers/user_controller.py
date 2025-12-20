@@ -1,8 +1,7 @@
 # controllers/user_controller.py
-import uuid
+
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session
 from models.student_model import StudentModel
-
 
 user = Blueprint("user", __name__)
 
@@ -23,7 +22,7 @@ def user_login():
             session["user_roll"] = student.roll
 
             flash(f"Login successful! Welcome back {student.name}", "success")
-            return redirect(url_for("main.home"))   
+            return redirect(url_for("main.home"))
         else:
             flash("Invalid credentials.", "error")
 
@@ -31,7 +30,7 @@ def user_login():
 
 
 # -------------------------------------
-# USER REGISTRATION
+# USER REGISTRATION (FIXED)
 # -------------------------------------
 @user.route("/register", methods=["GET", "POST"])
 def user_register():
@@ -48,10 +47,24 @@ def user_register():
             flash("Roll, Name & Password are required", "error")
             return redirect(url_for("user.user_register"))
 
-        # Create user
-        StudentModel.create(roll, name, dept, year, email, password)
+        # ✅ IMPORTANT: check create() result
+        success = StudentModel.create(
+            roll=roll,
+            name=name,
+            department=dept,
+            year=year,
+            email=email,
+            password=password
+        )
+
+        if not success:
+            flash(
+                "⚠️ Roll number already exists. Please verify your roll number and try again.",
+                "error"
+            )
+            return redirect(url_for("user.user_register"))
 
         flash("Registration successful! Please login.", "success")
-        return redirect(url_for("user.user_login"))  # ✔ Correct
+        return redirect(url_for("user.user_login"))
 
     return render_template("user/user_register.html")

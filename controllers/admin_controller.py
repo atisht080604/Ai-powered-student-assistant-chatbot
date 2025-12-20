@@ -67,13 +67,46 @@ def admin_students_add():
 
     if not success:
         flash(
-            "⚠️ Student with this roll number already exists. Please use a unique roll number.",
+            "⚠️ Roll number already exists. Please verify the roll number before adding the student.",
             "error"
         )
         return redirect(url_for("admin.admin_students"))
 
     flash("✅ Student added successfully!", "success")
     return redirect(url_for("admin.admin_students"))
+
+
+# Edit the student
+@admin.route("/admin/students/update/<int:sid>", methods=["POST"])
+@admin_required
+def admin_students_update(sid):
+    StudentModel.update_admin(
+        sid=sid,
+        name=request.form.get("name"),
+        department=request.form.get("department"),
+        year=request.form.get("year"),
+        attendance=request.form.get("attendance"),
+        email=request.form.get("email"),
+    )
+
+    flash("Student updated successfully!", "success")
+    return redirect(url_for("admin.admin_students"))
+
+# admin fee update
+
+@admin.route("/admin/fees/update/<int:fid>", methods=["POST"])
+@admin_required
+def admin_fees_update(fid):
+    FeeModel.update(
+        fid=fid,
+        semester=request.form.get("semester"),
+        amount_due=request.form.get("amount_due"),
+        amount_paid=request.form.get("amount_paid"),
+        due_date=request.form.get("due_date"),
+    )
+
+    flash("Fee record updated successfully!", "success")
+    return redirect(url_for("admin.admin_fees"))
 
 
 @admin.route("/admin/students/delete/<int:sid>", methods=["POST"])
@@ -126,14 +159,28 @@ def admin_timetable():
     return render_template("admin/admin_timetable.html", timetable=rows)
 
 
+# Admin Timetable add
 @admin.route("/admin/timetable/add", methods=["POST"])
 @admin_required
 def admin_timetable_add():
+
+    class_date = request.form.get("class_date")
+    start_time = request.form.get("start_time")
+    end_time = request.form.get("end_time")
+
+    # 🔴 Time clash check
+    if TimetableModel.has_time_clash(class_date, start_time, end_time):
+        flash(
+            "⚠️ Time clash detected! Another class already exists during this time.",
+            "error"
+        )
+        return redirect(url_for("admin.admin_timetable"))
+
     TimetableModel.create(
         day=request.form.get("day"),
-        class_date=request.form.get("class_date"),
-        start_time=request.form.get("start_time"),
-        end_time=request.form.get("end_time"),
+        class_date=class_date,
+        start_time=start_time,
+        end_time=end_time,
         subject=request.form.get("subject"),
         instructor=request.form.get("instructor"),
         location=request.form.get("location"),
@@ -183,6 +230,47 @@ def admin_timetable_delete(tid):
     flash("Timetable entry removed successfully!", "info")
     return redirect(url_for("admin.admin_timetable"))
 
+
+@admin.route("/admin/timetable/edit/<int:tid>")
+@admin_required
+def admin_timetable_edit(tid):
+    timetable = TimetableModel.get_by_id(tid)
+    return render_template(
+        "admin/admin_timetable_edit.html",
+        t=timetable
+    )
+
+
+# Admin Timetable Update
+@admin.route("/admin/timetable/update/<int:tid>", methods=["POST"])
+@admin_required
+def admin_timetable_update(tid):
+
+    class_date = request.form.get("class_date")
+    start_time = request.form.get("start_time")
+    end_time = request.form.get("end_time")
+
+    # 🔴 Time clash check (exclude current row)
+    if TimetableModel.has_time_clash(class_date, start_time, end_time, exclude_id=tid):
+        flash(
+            "⚠️ Time clash detected! Another class already exists during this time.",
+            "error"
+        )
+        return redirect(url_for("admin.admin_timetable"))
+
+    TimetableModel.update(
+        tid=tid,
+        day=request.form.get("day"),
+        class_date=class_date,
+        start_time=start_time,
+        end_time=end_time,
+        subject=request.form.get("subject"),
+        instructor=request.form.get("instructor"),
+        location=request.form.get("location"),
+    )
+
+    flash("Timetable updated successfully!", "success")
+    return redirect(url_for("admin.admin_timetable"))
 
 # -----------------------------------
 # Admin Logout

@@ -27,7 +27,12 @@
 
             <form method="post" class="login-form">
                 <label>Roll Number</label>
-                <input type="text" name="roll" required>
+                <input type="text" name="roll" placeholder="Roll (e.g., R001)" pattern="R[0-9]{3}"
+                    title="Roll must be in format R001, R002, etc." required>
+                <small style="color:#ffb3b3;">
+                    ⚠️ Roll number is permanent and cannot be changed later. Please enter carefully.
+                </small>
+
 
                 <label>Name</label>
                 <input type="text" name="name" required>
