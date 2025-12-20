@@ -1,26 +1,23 @@
 import requests
 import os
 
-MODEL_NAME = os.getenv("LOCAL_LLM_MODEL", "mistral")
+MODEL_NAME = os.getenv("LOCAL_LLM_MODEL", "phi")
 
 def ask_local_llm(prompt):
     payload = {
         "model": MODEL_NAME,
         "prompt": f"""
-You are a friendly student assistant.
-Reply casually like a human.
-Keep answers SHORT (2–4 lines max).
-Do NOT explain what you are doing.
-
+You are a helpful student assistant.
+Answer clearly and completely.
 User: {prompt}
 Assistant:
 """,
         "stream": False,
         "options": {
-            "temperature": 0.7,
+            "temperature": 0.6,
             "top_p": 0.9,
             "num_ctx": 512,
-            "num_predict": 120
+            "num_predict": 512
         }
     }
 
@@ -28,8 +25,9 @@ Assistant:
         r = requests.post(
             "http://127.0.0.1:11434/api/generate",
             json=payload,
-            timeout=25
+            timeout=60
         )
         return r.json().get("response", "").strip()
-    except Exception:
-        return "⚠️ Local assistant is busy. Please try again."
+    except Exception as e:
+        print("LOCAL LLM ERROR:", e)
+        return "🤖 AI service is temporarily unavailable. Please try again later."

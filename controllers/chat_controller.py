@@ -1,5 +1,5 @@
 # controllers/chat_controller.py
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, session
 from models.student_model import StudentModel
 from models.fee_model import FeeModel
 from models.timetable_model import TimetableModel
@@ -8,13 +8,13 @@ from utils.local_llm import ask_local_llm
 
 chat = Blueprint("chat", __name__)
 
-# shared chat history (global memory)
-chat_history = []
 
 
 @chat.route("/get_response", methods=["POST"])
 def get_response():
+    
     global chat_history
+    chat_history = session.get("chat_history", [])
 
     data = request.get_json()
     user_msg = data.get("message", "").strip()
@@ -62,14 +62,18 @@ def get_response():
     # AI MODE (Gemini → Local fallback)
     # --------------------------------------------
     chat_history.append(f"User: {user_msg}")
-    chat_history = chat_history[-20:]  # hard cap
+    chat_history = chat_history[-10:]   # keep last 10 only
+    session["chat_history"] = chat_history
+
 
     # ---- Gemini prompt (rich) ----
     instruction = (
-        "You are a helpful Student Assistant. "
-        "Answer clearly, concisely, and politely. "
-        "Use emojis only if helpful."
-    )
+    "You are a helpful student assistant. "
+    "Always give complete, well-structured answers. "
+    "Do not cut responses. "
+    "Keep explanations simple and clear."
+)
+
 
     contents = [instruction] + chat_history
 
@@ -88,8 +92,11 @@ def get_response():
                 recent_msgs.append(msg.replace("User:", "").strip())
 
         joined_prompt = "\n".join(recent_msgs[-2:])
-        bot_reply = ask_local_llm(joined_prompt)
+        bot_reply = ask_local_llm(user_msg)
+
 
     chat_history.append(f"Bot: {bot_reply}")
+    session["chat_history"] = chat_history
+
 
     return jsonify({"reply": bot_reply})

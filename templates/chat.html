@@ -13,6 +13,7 @@
 </head>
 
 <body>
+   
     <div class="bg-gradient"></div>
 
     <!-- Navbar (same style as home) -->
@@ -96,7 +97,10 @@
             try {
                 const res = await fetch("/get_response", {
                     method: "POST",
-                    headers: { "Content-Type": "application/json" },
+                    headers: { "Content-Type": "application/json" ,
+                            "X-Login-Token": sessionStorage.getItem("login_token")
+                    },
+                    
                     body: JSON.stringify({ message: msg })
                 });
 
@@ -116,6 +120,7 @@
             "• Type your roll (e.g., R001) for full profile\n" +
             "• Or just say: tell me a joke 😄", "bot");
     </script>
+    
 
 </body>
 

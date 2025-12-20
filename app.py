@@ -8,12 +8,29 @@ from config import SECRET_KEY, GOOGLE_API_KEY, MODEL_NAME
 from google import genai
 from utils.ai_client import client, MODEL
 
+import threading
+from utils.local_llm import ask_local_llm
 
 
 # Create Flask app FIRST
 app = Flask(__name__)
 app.secret_key = SECRET_KEY
-app.config['SESSION_PERMANENT'] = False
+
+# Session config (browser-session only)
+app.config["SESSION_PERMANENT"] = False
+app.config["SESSION_USE_SIGNER"] = True
+app.config["SESSION_COOKIE_HTTPONLY"] = True
+
+
+
+def warm_up_llm():
+    try:
+        ask_local_llm("hello")
+        print("✅ Local LLM warmed up")
+    except Exception as e:
+        print("LLM warm-up failed:", e)
+
+threading.Thread(target=warm_up_llm).start()
 
 
 
