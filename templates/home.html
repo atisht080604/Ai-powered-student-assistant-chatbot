@@ -18,6 +18,12 @@
 
 <body>
     
+    {% if session.get("user_logged_in") %}
+    <a href="{{ url_for('profile.edit_profile') }}" class="profile-fab" title="Edit Profile">
+       <img src="static\images\profile_image.png" style="width: 35px; height: auto;">
+    </a>
+    {% endif %}
+
     {% with messages = get_flashed_messages(with_categories=True) %}
     {% if messages %}
     <div class="flash-container">

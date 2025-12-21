@@ -1,92 +1,164 @@
-/* ---------- Global Auth Background ---------- */
-.auth-body {
-    background: #0d1021;
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: "Poppins", sans-serif;
-    color: #dfe6ff;
+/* ================= PROFILE PAGE ================= */
+
+/* ================= BACKGROUND ================= */
+
+body {
+    font-family: "Poppins", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    color: #f5f6ff;
+    overflow-x: hidden;
+    position: relative;
 }
 
-/* ---------- Card ---------- */
-.auth-card {
-    width: 420px;
-    padding: 36px;
-    background: #0f1535;
-    border-radius: 22px;
-    border: 1px solid rgba(0, 255, 255, 0.15);
-    box-shadow: 0 0 25px rgba(0, 0, 0, 0.35);
+/* Animated gradient background */
+.bg-gradient {
+    position: fixed;
+    inset: 0;
+    background:
+        radial-gradient(circle at 0% 0%, #1a73ff 0, transparent 55%),
+        radial-gradient(circle at 100% 0%, #ff2ea6 0, transparent 55%),
+        radial-gradient(circle at 50% 100%, #00ffc3 0, transparent 55%),
+        #050818;
+    animation: moveGradient 18s ease-in-out infinite alternate;
+    z-index: -2;
+}
+
+@keyframes moveGradient {
+    0% {
+        background-position: 0% 0%, 100% 0%, 50% 100%;
+    }
+    100% {
+        background-position: 20% 10%, 80% 0%, 50% 90%;
+    }
+}
+
+/* Dark overlay for depth */
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background:
+        radial-gradient(circle at 20% 0, rgba(0, 0, 0, 0.7), transparent 50%),
+        radial-gradient(circle at 80% 100%, rgba(0, 0, 0, 0.7), transparent 55%);
+    z-index: -1;
+    pointer-events: none;
+}
+
+
+.profile-container {
+    max-width: 520px;
+    margin: 120px auto 60px;
+    padding: 28px 26px;
+
+    background: linear-gradient(
+        135deg,
+        rgba(10, 20, 60, 0.96),
+        rgba(7, 12, 40, 0.94)
+    );
+
+    border-radius: 24px;
+    border: 1px solid rgba(132, 179, 255, 0.55);
+
+    box-shadow:
+        0 0 30px rgba(0, 0, 0, 0.8),
+        0 0 40px rgba(0, 255, 204, 0.18);
 }
 
 /* Title */
-.auth-card h2 {
-    font-size: 24px;
-    margin-bottom: 18px;
-    color: #ffffff;
+.profile-container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
 }
 
-/* ---------- Form Labels ---------- */
-label {
+/* Labels */
+.profile-container label {
     display: block;
-    margin-bottom: 6px;
-    font-size: 14px;
-    color: #9fb3ff;
+    margin: 8px 0 4px;
+
+    font-size: 13px;
+    color: #b9c6ff;
 }
 
-/* ---------- Input Fields ---------- */
-input {
+/* Inputs */
+.profile-container input {
     width: 100%;
     padding: 12px 14px;
-    margin-bottom: 16px;
-    background: #0b112d;
-    border: 1px solid rgba(0, 255, 255, 0.20);
-    border-radius: 25px;
-    color: #e0e6ff;
-    font-size: 15px;
+    margin-bottom: 12px;
+
+    border-radius: 999px;
+    border: 1px solid rgba(140, 185, 255, 0.55);
+
+    background: rgba(4, 8, 28, 0.96);
+    color: #f5f6ff;
+    font-size: 14px;
     outline: none;
 }
 
-input:focus {
+.profile-container input::placeholder {
+    color: #9da9ff;
+}
+
+.profile-container input:focus {
     border-color: #00ffc3;
-    box-shadow: 0 0 10px rgba(0, 255, 195, 0.4);
+    box-shadow: 0 0 12px rgba(0, 255, 204, 0.45);
 }
 
-/* ---------- Button ---------- */
-.auth-btn {
-    width: 100%;
-    margin-top: 6px;
-    padding: 12px 0;
-    font-size: 15px;
-    font-weight: 600;
-    border: none;
-    border-radius: 25px;
-    cursor: pointer;
-    background: linear-gradient(90deg, #00ffc8, #4db8ff);
-    color: #000;
-    transition: 0.2s ease-in-out;
+/* Disabled input (Roll number) */
+.profile-container input:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
 }
 
-.auth-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 0 16px rgba(0, 255, 204, 0.6);
-}
-
-/* ---------- Links ---------- */
-.auth-link {
-    display: block;
-    margin-top: 14px;
-    font-size: 14px;
-    text-decoration: none;
-    color: #90a7ff;
-    transition: 0.2s;
-}
-
-.auth-link:hover {
-    color: #00ffe4;
-}
-
-/* Back link styling */
-.auth-link.back {
+/* Action buttons */
+.profile-actions {
+    display: flex;
+    gap: 12px;
     margin-top: 18px;
+}
+
+/* Save button */
+.profile-actions button {
+    flex: 1;
+    padding: 12px 0;
+
+    border-radius: 999px;
+    border: none;
+
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+
+    background: linear-gradient(120deg, #00ffc3, #4fa3ff);
+    color: #020712;
+
+    box-shadow: 0 0 16px rgba(0, 255, 204, 0.45);
+    transition: 0.2s ease;
+}
+
+.profile-actions button:hover {
+    transform: translateY(-1px) scale(1.02);
+}
+
+/* Cancel link */
+.profile-actions a {
+    flex: 1;
+    text-align: center;
+    padding: 12px 0;
+
+    border-radius: 999px;
+    text-decoration: none;
+
+    background: rgba(255, 80, 80, 0.22);
+    border: 1px solid rgba(255, 80, 80, 0.55);
+    color: #fff;
+
+    transition: 0.2s ease;
+}
+
+.profile-actions a:hover {
+    background: rgba(255, 80, 80, 0.45);
+    box-shadow: 0 0 14px rgba(255, 80, 80, 0.55);
 }
