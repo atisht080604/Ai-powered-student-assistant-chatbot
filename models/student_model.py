@@ -118,3 +118,6 @@ class StudentModel:
         with engine.connect() as conn:
             conn.execute(query, {"email": new_email, "roll": roll})
             conn.commit()
+
+    
+        

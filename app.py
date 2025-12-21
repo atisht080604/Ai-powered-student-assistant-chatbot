@@ -26,7 +26,7 @@ app.config["SESSION_COOKIE_HTTPONLY"] = True
 def warm_up_llm():
     try:
         ask_local_llm("hello")
-        print("✅ Local LLM warmed up")
+        print("✅The System is Good to Goo!!")
     except Exception as e:
         print("LLM warm-up failed:", e)
 
