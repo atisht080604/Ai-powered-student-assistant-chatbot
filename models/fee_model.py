@@ -75,3 +75,19 @@ class FeeModel:
         with engine.connect() as conn:
             q = text("SELECT COUNT(*) FROM fees")
             return conn.execute(q).scalar()
+        
+
+    @staticmethod
+    def get_pending_fee_students():
+        with engine.connect() as conn:
+            return conn.execute(
+                text("""
+                    SELECT s.roll, s.name,
+                        (f.amount_due - f.amount_paid) AS pending_amount,
+                        f.due_date
+                    FROM students s
+                    JOIN fees f ON s.roll = f.roll
+                    WHERE (f.amount_due - f.amount_paid) > 0
+                    ORDER BY pending_amount DESC
+                """)
+            ).fetchall()

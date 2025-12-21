@@ -54,6 +54,74 @@
                 <p class="value">{{ stats.timetable }}</p>
             </div>
         </section>
+        <section class="panel">
+            <h2>⚠️ Students with Low Attendance</h2>
+        
+            {% if low_attendance_students %}
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Roll</th>
+                            <th>Name</th>
+                            <th>Department</th>
+                            <th>Year</th>
+                            <th>Attendance (%)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for s in low_attendance_students %}
+                        <tr>
+                            <td>{{ s.roll }}</td>
+                            <td>{{ s.name }}</td>
+                            <td>{{ s.department }}</td>
+                            <td>{{ s.year }}</td>
+                            <td style="color:#ff5c5c; font-weight:600;">
+                                {{ s.attendance }}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p>✅ No students with low attendance.</p>
+            {% endif %}
+        </section>
+        <section class="panel">
+            <h2>💰 Students with Pending Fees</h2>
+        
+            {% if pending_fee_students %}
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Roll</th>
+                            <th>Name</th>
+                            <th>Pending Amount</th>
+                            <th>Due Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for f in pending_fee_students %}
+                        <tr>
+                            <td>{{ f.roll }}</td>
+                            <td>{{ f.name }}</td>
+                            <td style="color:#ffa500; font-weight:600;">
+                                ₹{{ f.pending_amount }}
+                            </td>
+                            <td>{{ f.due_date }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p>✅ No pending fee records.</p>
+            {% endif %}
+        </section>
+
+
     </main>
 
     

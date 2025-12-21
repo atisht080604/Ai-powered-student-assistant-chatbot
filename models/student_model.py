@@ -120,4 +120,74 @@ class StudentModel:
             conn.commit()
 
     
-        
+
+    @staticmethod
+    def check_eligibility(roll):
+        with engine.connect() as conn:
+            student = conn.execute(
+                text("SELECT attendance FROM students WHERE roll = :r"),
+                {"r": roll}
+            ).fetchone()
+
+            fee = conn.execute(
+                text("SELECT amount_due, amount_paid FROM fees WHERE roll = :r"),
+                {"r": roll}
+            ).fetchone()
+
+        if not student:
+            return False, "Student record not found."
+
+        attendance_ok = student.attendance >= 75
+
+        pending = 0
+        if fee:
+            pending = fee.amount_due - fee.amount_paid
+
+        if attendance_ok and pending == 0:
+            return True, "You are eligible for exams."
+
+        reason = []
+        if not attendance_ok:
+            reason.append("attendance is below 75%")
+        if pending > 0:
+            reason.append(f"₹{pending} fee is pending")
+
+        return False, "You are NOT eligible because " + " and ".join(reason)
+    
+    @staticmethod
+    def get_alerts(roll):
+        alerts = []
+
+        with engine.connect() as conn:
+            student = conn.execute(
+                text("SELECT attendance, email FROM students WHERE roll = :r"),
+                {"r": roll}
+            ).fetchone()
+
+            fee = conn.execute(
+                text("SELECT amount_due, amount_paid, due_date FROM fees WHERE roll = :r"),
+                {"r": roll}
+            ).fetchone()
+
+        if student.attendance < 75:
+            alerts.append(f"⚠️ Your attendance is low ({student.attendance}%).")
+
+        if fee:
+            pending = fee.amount_due - fee.amount_paid
+            if pending > 0:
+                alerts.append(f"⚠️ You have ₹{pending} fee pending. Due date: {fee.due_date}")
+
+        return alerts, student.email
+
+    @staticmethod
+    def get_low_attendance_students(threshold=75):
+        with engine.connect() as conn:
+            return conn.execute(
+                text("""
+                    SELECT roll, name, department, year, attendance
+                    FROM students
+                    WHERE attendance < :threshold
+                    ORDER BY attendance ASC
+                """),
+                {"threshold": threshold}
+            ).fetchall()

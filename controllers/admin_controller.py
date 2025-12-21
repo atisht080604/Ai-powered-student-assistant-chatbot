@@ -33,12 +33,23 @@ def admin_login():
 @admin.route("/admin")
 @admin_required
 def admin_dashboard():
+
     stats = {
         "students": StudentModel.count(),
         "fees": FeeModel.count(),
         "timetable": TimetableModel.count()
     }
-    return render_template("admin/admin_dashboard.html", stats=stats)
+
+    low_attendance_students = StudentModel.get_low_attendance_students()
+    pending_fee_students = FeeModel.get_pending_fee_students()
+
+    return render_template(
+        "admin/admin_dashboard.html",
+        stats=stats,
+        low_attendance_students=low_attendance_students,
+        pending_fee_students=pending_fee_students
+    )
+
 
 
 # ------------------------------
