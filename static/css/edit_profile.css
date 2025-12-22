@@ -45,7 +45,7 @@ body::before {
 
 
 .profile-container {
-    max-width: 520px;
+    max-width: 500px;
     margin: 120px auto 60px;
     padding: 28px 26px;
 
@@ -84,7 +84,7 @@ body::before {
 
 /* Inputs */
 .profile-container input {
-    width: 100%;
+    width: 90%;
     padding: 12px 14px;
     margin-bottom: 12px;
 

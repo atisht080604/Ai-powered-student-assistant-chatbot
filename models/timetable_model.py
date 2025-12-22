@@ -1,6 +1,8 @@
 # models/timetable_model.py
 from utils.db import engine
 from sqlalchemy import text
+from datetime import datetime
+
 
 class TimetableModel:
 
@@ -106,3 +108,37 @@ class TimetableModel:
         with engine.connect() as conn:
             q = text("SELECT * FROM timetable WHERE id = :id")
             return conn.execute(q, {"id": tid}).fetchone()
+        
+    @staticmethod
+    def get_today_classes():
+        today = datetime.now().strftime("%A")  # e.g., Monday
+
+        with engine.connect() as conn:
+            return conn.execute(
+                text("""
+                    SELECT subject, start_time, end_time, instructor, location
+                    FROM timetable
+                    WHERE day = :day
+                    ORDER BY start_time
+                """),
+                {"day": today}
+            ).fetchall()
+    
+    @staticmethod
+    def get_next_class():
+        today = datetime.now().strftime("%A")
+        current_time = datetime.now().strftime("%H:%M")
+
+        with engine.connect() as conn:
+            return conn.execute(
+                text("""
+                    SELECT subject, start_time, end_time, instructor, location
+                    FROM timetable
+                    WHERE day = :day
+                    AND start_time > :now
+                    ORDER BY start_time
+                    LIMIT 1
+                """),
+                {"day": today, "now": current_time}
+            ).fetchone()
+

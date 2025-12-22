@@ -9,6 +9,8 @@ from utils.college_info import COLLEGE_INFO
 from utils.local_llm import ask_local_llm
 import difflib
 
+from datetime import datetime
+
 chat = Blueprint("chat", __name__)
 
 # -------------------------------
@@ -54,7 +56,7 @@ def get_response():
         })
 
     # -------------------------------
-    # 1️⃣ ATTENDANCE
+    # ATTENDANCE
     # -------------------------------
     if any(fuzzy_match(w, ["attendance", "attendence", "attend", "present"], 0.75) for w in words):
         student = StudentModel.get_by_roll(roll)
@@ -63,7 +65,7 @@ def get_response():
         })
 
     # -------------------------------
-    # 2️⃣ FEES
+    # FEES
     # -------------------------------
     elif any(fuzzy_match(w, ["fee", "fees", "payment", "amount"], 0.75) for w in words):
         fee = FeeModel.get_by_roll(roll)
@@ -82,8 +84,52 @@ def get_response():
             )
         })
 
+
     # -------------------------------
-    # 3️⃣ TIMETABLE
+    # TODAY'S CLASSES
+    # -------------------------------
+    elif any(phrase in msg for phrase in [
+        "today class", "today classes", "today timetable", "class today"
+    ]):
+        today_classes = TimetableModel.get_today_classes()
+
+        if not today_classes:
+            return jsonify({"reply": "📅 You have no classes scheduled today."})
+
+        reply = "📅 **Today's Classes**\n"
+        for c in today_classes:
+            reply += f"- {c.start_time}–{c.end_time}: {c.subject}\n"
+
+        return jsonify({"reply": reply})
+
+
+    # -------------------------------
+    # NEXT UPCOMING CLASS
+    # -------------------------------
+    elif any(phrase in msg for phrase in [
+        "next class", "next lecture", "upcoming class", "what is my next class"
+    ]):
+        next_class = TimetableModel.get_next_class()
+
+        if not next_class:
+            return jsonify({"reply": "🎉 You have no more classes today."})
+
+        reply = (
+            "⏭️ **Your Next Class**\n"
+            f"- {next_class.subject}\n"
+            f"- Time: {next_class.start_time}–{next_class.end_time}\n"
+            f"- Instructor: {next_class.instructor}\n"
+            f"- Location: {next_class.location}"
+        )
+
+        return jsonify({"reply": reply})
+
+
+    
+
+    
+    # -------------------------------
+    #  TIMETABLE
     # -------------------------------
     elif any(fuzzy_match(w, ["timetable", "schedule", "class", "lecture"], 0.75) for w in words):
         timetable = TimetableModel.get_all()
@@ -97,7 +143,7 @@ def get_response():
         return jsonify({"reply": reply})
 
     # -------------------------------
-    # 🔥 4️⃣ COLLEGE INFO (IMPORTANT)
+    #  COLLEGE INFO (IMPORTANT)
     # -------------------------------
     elif any(key in msg for key in ["rule", "policy", "office", "library"]):
         for k, v in COLLEGE_INFO.items():
@@ -109,14 +155,14 @@ def get_response():
         })
 
     # -------------------------------
-    # 5️⃣ ELIGIBILITY CHECK
+    #  ELIGIBILITY CHECK
     # -------------------------------
     elif any(word in msg for word in ["eligible", "eligibility"]):
         status, message = StudentModel.check_eligibility(roll)
         return jsonify({"reply": f"🎓 {message}"})
 
     # -------------------------------
-    # 6️⃣ SMART ALERTS (CHAT + EMAIL)
+    #  SMART ALERTS (CHAT + EMAIL)
     # -------------------------------
     elif "alert" in msg or "warning" in msg:
         alerts, email = StudentModel.get_alerts(roll)
@@ -124,21 +170,25 @@ def get_response():
         if not alerts:
             return jsonify({"reply": "✅ No alerts. Everything looks good!"})
 
-        try:
-            send_alert_email(email, alerts)
-        except Exception as e:
-            print("❌ Email alert failed:", e)
+        # 🔕 Do NOT resend email if already sent in this session
+        if not session.get("alert_email_sent"):
+            try:
+                send_alert_email(email, alerts)
+                session["alert_email_sent"] = True
+            except Exception as e:
+                print("❌ Email alert failed:", e)
 
         reply = "🚨 **Important Alerts**\n"
         for a in alerts:
             reply += f"- {a}\n"
 
-        reply += "\n📧 Alerts have also been sent to your email."
+        reply += "\n📧 Alerts have already been sent to your email."
 
         return jsonify({"reply": reply})
 
+
     # -------------------------------
-    # 7️⃣ AI FALLBACK (LAST ONLY)
+    #  AI FALLBACK (LAST ONLY)
     # -------------------------------
     chat_history.append(f"User: {user_msg}")
     chat_history = chat_history[-10:]

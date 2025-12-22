@@ -2,6 +2,8 @@
 
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session
 from models.student_model import StudentModel
+from utils.email_service import send_alert_email
+
 
 user = Blueprint("user", __name__)
 
@@ -21,8 +23,19 @@ def user_login():
             session["user_name"] = student.name
             session["user_roll"] = student.roll
 
+           
+            alerts, email = StudentModel.get_alerts(student.roll)
+            if alerts:
+                try:
+                    send_alert_email(email, alerts)
+                    session["alert_email_sent"] = True
+                    flash("⚠️ Important academic alerts have been sent to your email.", "warning")
+                except Exception as e:
+                    print("Auto alert email failed:", e)
+
             flash(f"Login successful! Welcome back {student.name}", "success")
             return redirect(url_for("main.home"))
+
         else:
             flash("Invalid credentials.", "error")
 
@@ -30,7 +43,7 @@ def user_login():
 
 
 # -------------------------------------
-# USER REGISTRATION (FIXED)
+# USER REGISTRATION 
 # -------------------------------------
 @user.route("/register", methods=["GET", "POST"])
 def user_register():
@@ -68,3 +81,13 @@ def user_register():
         return redirect(url_for("user.user_login"))
 
     return render_template("user/user_register.html")
+
+
+# -------------------------------------
+# USER LOGOUT
+# -------------------------------------
+@user.route("/logout")
+def user_logout():
+    session.clear()   # clears all session data including alert flags
+    flash("You have been logged out successfully.", "info")
+    return redirect(url_for("main.home"))
