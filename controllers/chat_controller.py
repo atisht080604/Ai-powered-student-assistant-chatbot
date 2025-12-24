@@ -203,6 +203,7 @@ def get_response():
     contents = [instruction] + chat_history
 
     try:
+        
         response = client.models.generate_content(
             model=MODEL,
             contents=contents
@@ -212,6 +213,7 @@ def get_response():
 
     except Exception:
         bot_reply = ask_local_llm(user_msg)
+        
 
     chat_history.append(f"Bot: {bot_reply}")
     session["chat_history"] = chat_history

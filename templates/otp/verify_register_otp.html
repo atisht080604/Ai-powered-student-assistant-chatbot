@@ -1,8 +1,11 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-    <title>Reset Password</title>
+    <meta charset="UTF-8">
+    <title>Email Verification</title>
+
+    <!-- USE admin.css -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
 </head>
 
@@ -10,7 +13,8 @@
 
     <div class="admin-login-shell">
         <div class="admin-login-card">
-            <h1>Reset Password</h1>
+            <h1>Email Verification</h1>
+            <p class="subtitle">Enter the OTP sent to your email</p>
 
             {% with messages = get_flashed_messages(with_categories=true) %}
             {% for category, message in messages %}
@@ -19,9 +23,11 @@
             {% endwith %}
 
             <form method="POST" class="login-form">
-                <input type="password" name="password" placeholder="New Password" required>
-                <button>Update Password</button>
+                <input type="text" name="otp" placeholder="Enter 6-digit OTP" required>
+                <button type="submit">Verify OTP</button>
             </form>
+
+            <a href="/register" class="back-link">← Back to Register</a>
         </div>
     </div>
 

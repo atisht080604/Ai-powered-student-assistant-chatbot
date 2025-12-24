@@ -82,3 +82,45 @@ def reset_password():
         return redirect(url_for("user.user_login"))  # FIXED
 
     return render_template("otp/reset_password.html")
+
+
+# controllers/otp_controller.py
+# controllers/otp_controller.py
+
+from models.student_model import StudentModel
+
+@otp.route("/verify_register_otp", methods=["GET", "POST"])
+def verify_register_otp():
+
+    # ❗ Direct access protection
+    if "reg_otp" not in session:
+        flash("Session expired. Please register again.", "error")
+        return redirect(url_for("user.user_register"))
+
+    if request.method == "POST":
+        entered_otp = request.form.get("otp", "").strip()
+
+        if entered_otp != session.get("reg_otp"):
+            flash("Invalid OTP!", "error")
+            return redirect(url_for("otp.verify_register_otp"))
+
+        data = session.get("reg_data")
+
+        # ✅ Create student only AFTER OTP verification
+        StudentModel.create(
+            roll=data["roll"],
+            name=data["name"],
+            department=data["department"],
+            year=data["year"],
+            email=data["email"],
+            password=data["password"]
+        )
+
+        # 🧹 Cleanup
+        session.pop("reg_data", None)
+        session.pop("reg_otp", None)
+
+        flash("Registration successful! Please login.", "success")
+        return redirect(url_for("user.user_login"))
+
+    return render_template("otp/verify_register_otp.html")

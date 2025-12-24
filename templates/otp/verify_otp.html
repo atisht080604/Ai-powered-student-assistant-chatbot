@@ -1,10 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
-    <meta charset="utf-8">
     <title>Verify OTP</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
 </head>
 
@@ -12,29 +10,18 @@
 
     <div class="admin-login-shell">
         <div class="admin-login-card">
-
             <h1>Verify OTP</h1>
-            <p class="subtitle">Enter the 6-digit OTP sent to your email.</p>
 
             {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-            <div class="flash-area">
-                {% for category, msg in messages %}
-                <div class="flash {{ category }}">{{ msg }}</div>
-                {% endfor %}
-            </div>
-            {% endif %}
+            {% for category, message in messages %}
+            <div class="flash {{ category }}">{{ message }}</div>
+            {% endfor %}
             {% endwith %}
 
             <form method="POST" class="login-form">
-                <label>OTP</label>
-                <input type="text" name="otp" maxlength="6" placeholder="123456" required>
-
-                <button type="submit">Verify</button>
+                <input type="text" name="otp" placeholder="Enter OTP" required>
+                <button>Verify</button>
             </form>
-
-            <a href="/forgot" class="back-link">← Resend OTP</a>
-
         </div>
     </div>
 
