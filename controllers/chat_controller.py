@@ -204,6 +204,7 @@ def get_response():
 
     try:
         
+        
         response = client.models.generate_content(
             model=MODEL,
             contents=contents
@@ -212,6 +213,7 @@ def get_response():
             "🤖 I can help with attendance, fees, timetable, eligibility, or college rules."
 
     except Exception:
+      
         bot_reply = ask_local_llm(user_msg)
         
 

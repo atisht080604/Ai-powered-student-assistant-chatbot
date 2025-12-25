@@ -3,12 +3,6 @@
 import os
 from google import genai
 
-# ---------------------------------------
-# Load your API Key (read from .env or set manually)
-# ---------------------------------------
-# IF USING .env:
-# Ensure in app.py you call: load_dotenv()
-
 API_KEY = os.getenv("GOOGLE_API_KEY")
 
 if not API_KEY:
@@ -22,3 +16,4 @@ os.environ["GOOGLE_API_KEY"] = API_KEY
 # ---------------------------------------
 client = genai.Client()
 MODEL = "models/gemini-2.0-flash"
+

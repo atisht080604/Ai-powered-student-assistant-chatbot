@@ -4,6 +4,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash,
 from models.student_model import StudentModel
 from utils.email_service import send_alert_email
 from utils.email_service import send_otp_email
+import time
 
 
 user = Blueprint("user", __name__)
@@ -85,6 +86,7 @@ def user_register():
             "password": password
         }
         session["reg_otp"] = str(otp)
+        session["reg_otp_time"] = time.time()
 
         from utils.email_service import send_otp_email
         send_otp_email(email, otp)

@@ -3,6 +3,8 @@ from utils.decorators import user_required
 from utils.email_service import send_otp_email
 from models.student_model import StudentModel
 import random
+import time
+
 
 profile = Blueprint("profile", __name__)
 
@@ -47,6 +49,7 @@ def update_profile():
         otp = random.randint(100000, 999999)
 
         session["email_change_otp"] = str(otp)
+        session["email_change_otp_time"] = time.time()
         session["new_email_temp"] = new_email
 
         send_otp_email(new_email, otp)
@@ -78,7 +81,11 @@ def update_profile():
 def verify_email_otp():
     if request.method == "POST":
         entered_otp = request.form.get("otp")
-
+        
+        if time.time() - session.get("email_change_otp_time", 0) > 300:
+            flash("OTP expired. Please resend OTP.", "error")
+            return redirect(url_for("profile.resend_email_otp"))
+    
         if entered_otp == session.get("email_change_otp"):
             roll = session.get("user_roll")
             new_email = session.get("new_email_temp")

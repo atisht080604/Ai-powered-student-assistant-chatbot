@@ -4,6 +4,8 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash,
 from utils.email_service import send_otp_email
 from models.student_model import StudentModel
 import random
+import time
+
 
 otp = Blueprint("otp", __name__)
 
@@ -27,6 +29,8 @@ def forgot_password():
         # Save in session
         session["reset_email"] = email
         session["reset_otp"] = str(generated_otp)
+        session["reset_otp_time"] = time.time()
+
 
         # Send OTP to email
         send_otp_email(email, generated_otp)
@@ -45,15 +49,25 @@ def verify_otp():
     if request.method == "POST":
         entered_otp = request.form.get("otp")
 
-        if "reset_otp" not in session:
-            flash("OTP expired! Try again.", "error")
-            return redirect(url_for("otp.forgot_password"))
+        entered_otp = request.form.get("otp")
 
+        # 🔴 SAFETY CHECK
+        if "reset_otp" not in session or "reset_otp_time" not in session:
+            flash("OTP expired. Please resend OTP.", "error")
+            return redirect(url_for("otp.resend_otp"))
+
+        # ⏳ EXPIRY CHECK
+        if time.time() - session["reset_otp_time"] > 300:
+            flash("OTP expired. Please resend OTP.", "error")
+            return redirect(url_for("otp.resend_otp"))
+
+        # ✅ OTP MATCH CHECK
         if entered_otp == session["reset_otp"]:
             flash("OTP verified! Set a new password.", "success")
             return redirect(url_for("otp.reset_password"))
         else:
             flash("Invalid OTP!", "error")
+
 
     return render_template("otp/verify_otp.html")
 
@@ -85,7 +99,6 @@ def reset_password():
 
 
 # controllers/otp_controller.py
-# controllers/otp_controller.py
 
 from models.student_model import StudentModel
 
@@ -100,9 +113,16 @@ def verify_register_otp():
     if request.method == "POST":
         entered_otp = request.form.get("otp", "").strip()
 
+
+        if time.time() - session.get("reg_otp_time", 0) > 300:
+            flash("OTP expired. Please resend OTP.", "error")
+            return redirect(url_for("otp.resend_otp"))
+
+        
         if entered_otp != session.get("reg_otp"):
             flash("Invalid OTP!", "error")
             return redirect(url_for("otp.verify_register_otp"))
+
 
         data = session.get("reg_data")
 
@@ -138,6 +158,7 @@ def resend_otp():
 
         new_otp = random.randint(100000, 999999)
         session["reg_otp"] = str(new_otp)
+        session["reset_otp_time"] = time.time() 
 
         send_otp_email(email, new_otp)
         flash("OTP resent to your email.", "success")
@@ -149,6 +170,7 @@ def resend_otp():
 
         new_otp = random.randint(100000, 999999)
         session["reset_otp"] = str(new_otp)
+        session["reset_otp_time"] = time.time() 
 
         send_otp_email(email, new_otp)
         flash("OTP resent to your email.", "success")

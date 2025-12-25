@@ -59,9 +59,6 @@ app.register_blueprint(chat)
 app.register_blueprint(otp)
 app.register_blueprint(profile)
 
-# app.register_blueprint(otp)  # after making it
-
-
 # No-cache for admin pages
 @app.after_request
 def no_cache(response):
