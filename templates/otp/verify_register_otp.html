@@ -27,6 +27,11 @@
                 <button type="submit">Verify OTP</button>
             </form>
 
+            <!-- RESEND OTP -->
+            <a href="{{ url_for('otp.resend_otp') }}" class="back-link">
+                Didn’t receive OTP? Resend
+            </a>
+            <br>
             <a href="/register" class="back-link">← Back to Register</a>
         </div>
     </div>

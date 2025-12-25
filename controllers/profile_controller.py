@@ -99,3 +99,20 @@ def verify_email_otp():
             flash("Invalid OTP. Please try again.", "error")
 
     return render_template("user/verify_email_otp.html")
+
+
+@profile.route("/profile/resend_email_otp")
+@user_required
+def resend_email_otp():
+
+    new_email = session.get("new_email_temp")
+    if not new_email:
+        flash("Session expired.", "error")
+        return redirect(url_for("profile.edit_profile"))
+
+    new_otp = random.randint(100000, 999999)
+    session["email_change_otp"] = str(new_otp)
+
+    send_otp_email(new_email, new_otp)
+    flash("OTP resent to new email.", "success")
+    return redirect(url_for("profile.verify_email_otp"))

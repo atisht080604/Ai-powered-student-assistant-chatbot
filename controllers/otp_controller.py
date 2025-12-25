@@ -124,3 +124,35 @@ def verify_register_otp():
         return redirect(url_for("user.user_login"))
 
     return render_template("otp/verify_register_otp.html")
+
+
+# ------------------------------
+# RESEND OTP (COMMON)
+# ------------------------------
+@otp.route("/resend_otp")
+def resend_otp():
+
+    # Registration OTP
+    if "reg_data" in session:
+        email = session["reg_data"]["email"]
+
+        new_otp = random.randint(100000, 999999)
+        session["reg_otp"] = str(new_otp)
+
+        send_otp_email(email, new_otp)
+        flash("OTP resent to your email.", "success")
+        return redirect(url_for("otp.verify_register_otp"))
+
+    # Forgot-password OTP
+    if "reset_email" in session:
+        email = session["reset_email"]
+
+        new_otp = random.randint(100000, 999999)
+        session["reset_otp"] = str(new_otp)
+
+        send_otp_email(email, new_otp)
+        flash("OTP resent to your email.", "success")
+        return redirect(url_for("otp.verify_otp"))
+
+    flash("Session expired. Please try again.", "error")
+    return redirect(url_for("user.user_login"))
